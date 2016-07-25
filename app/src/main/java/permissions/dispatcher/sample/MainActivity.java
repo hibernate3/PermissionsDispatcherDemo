@@ -7,21 +7,22 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
 import permissions.dispatcher.*;
 import permissions.dispatcher.sample.camera.CameraPreviewFragment;
-import permissions.dispatcher.sample.contacts.ContactsFragment;
 
 @RuntimePermissions
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    private static final String TAG = "permissions";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findViewById(R.id.button_camera).setOnClickListener(this);
-        findViewById(R.id.button_contacts).setOnClickListener(this);
     }
 
     @Override
@@ -31,62 +32,52 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // NOTE: delegate the permission handling to generated method
                 MainActivityPermissionsDispatcher.showCameraWithCheck(this);
                 break;
-            case R.id.button_contacts:
-                // NOTE: delegate the permission handling to generated method
-                MainActivityPermissionsDispatcher.showContactsWithCheck(this);
-                break;
         }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[]
+            grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         // NOTE: delegate the permission handling to generated method
         MainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
-    @NeedsPermission(Manifest.permission.CAMERA)
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO})
     void showCamera() {
-        // NOTE: Perform action that requires the permission. If this is run by PermissionsDispatcher, the permission will have been granted
+        // NOTE: Perform action that requires the permission. If this is run by PermissionsDispatcher, the
+        // permission will have been granted
+
+        Log.i(TAG, "NeedsPermission");
+
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.sample_content_fragment, CameraPreviewFragment.newInstance())
                 .addToBackStack("camera")
                 .commitAllowingStateLoss();
     }
 
-    @NeedsPermission({Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS})
-    void showContacts() {
-        // NOTE: Perform action that requires the permission.
-        // If this is run by PermissionsDispatcher, the permission will have been granted
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.sample_content_fragment, ContactsFragment.newInstance())
-                .addToBackStack("contacts")
-                .commitAllowingStateLoss();
-    }
 
-    @OnShowRationale(Manifest.permission.CAMERA)
+    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO})
     void showRationaleForCamera(PermissionRequest request) {
         // NOTE: Show a rationale to explain why the permission is needed, e.g. with a dialog.
         // Call proceed() or cancel() on the provided PermissionRequest to continue or abort
+
+        Log.i(TAG, "OnShowRationale");
         showRationaleDialog(R.string.permission_camera_rationale, request);
     }
 
-    @OnShowRationale({Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS})
-    void showRationaleForContact(PermissionRequest request) {
-        // NOTE: Show a rationale to explain why the permission is needed, e.g. with a dialog.
-        // Call proceed() or cancel() on the provided PermissionRequest to continue or abort
-        showRationaleDialog(R.string.permission_contacts_rationale, request);
-    }
-
-    @OnPermissionDenied(Manifest.permission.CAMERA)
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO})
     void onCameraDenied() {
         // NOTE: Deal with a denied permission, e.g. by showing specific UI
         // or disabling certain functionality
+
+        Log.i(TAG, "OnPermissionDenied");
         Toast.makeText(this, R.string.permission_camera_denied, Toast.LENGTH_SHORT).show();
     }
 
-    @OnNeverAskAgain(Manifest.permission.CAMERA)
+    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO})
     void onCameraNeverAskAgain() {
+        Log.i(TAG, "OnNeverAskAgain");
         Toast.makeText(this, R.string.permission_camera_never_askagain, Toast.LENGTH_SHORT).show();
     }
 

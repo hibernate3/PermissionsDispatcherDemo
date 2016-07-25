@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/PermissionsDispatcherDemo.iml" filepath="$PROJECT_DIR$/PermissionsDispatcherDemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/permissionsdispatcher-library/permissionsdispatcher-library.iml" filepath="$PROJECT_DIR$/permissionsdispatcher-library/permissionsdispatcher-library.iml" />
     </modules>
   </component>
 </project>
